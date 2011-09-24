@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World!</string>
+    <string name="app_name">Cashpoint-Manager</string>
+    <string name="input_username">Username</string>
+    <string name="input_password">Password</string>
+    <string name="button_login">Login</string>
+    <string name="login_empty">Please fill out all fields.</string>
+    <string name="disclaimer">© 2011 RaumZeitLabor e.V.</string>
+    <string name="auto_login">Save Credentials</string>
+    <string name="logout">Logout</string>
+    <string name="scan">Scan</string>
+    <string name="timeout">The connection timed out.</string>
+    <string name="invalidresponse">The server did not return a valid response.</string>
+    <string name="auth_canceled">Authentication has been canceled.</string>
+    <string name="auth_wait">Authenticating, please wait...</string>
+    <string name="auth_success">Successfully authenticated.</string>
+    <string name="auth_fail">Authentication failed.</string>
+    <string name="logout_wait">Logging out, please wait...</string>
+    <string name="logout_success">Successfully signed off.</string>
+    <string name="logout_fail">Error while signing off. Please try again.</string>
+    <string name="groups_fetch_wait">Fetching groups, please wait...</string>
+    <string name="groups_fetch_fail">Could not get groups</string>
+</resources>

@@ -1,0 +1,5 @@
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/linearLayout1" android:orientation="vertical" android:layout_height="fill_parent" android:layout_width="fill_parent" android:padding="5dp">
+        <TextView android:layout_height="wrap_content" android:text="TextView" android:textAppearance="?android:attr/textAppearanceLarge" android:layout_width="wrap_content" android:id="@+id/entryName"></TextView>
+        <TextView android:layout_height="wrap_content" android:text="TextView" android:textAppearance="?android:attr/textAppearanceSmall" android:layout_width="wrap_content" android:id="@+id/entryDescription"></TextView>
+    </LinearLayout>

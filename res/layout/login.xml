@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent" android:layout_height="fill_parent">
+    <ScrollView android:layout_width="match_parent" android:id="@+id/scrollView1" android:layout_height="match_parent">
+        <LinearLayout android:id="@+id/linearLayout1" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:gravity="center_vertical">
+            <ImageView android:src="@drawable/rzl_logo" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_margin="10dp" android:id="@+id/rzlLogo" android:layout_gravity="center" android:maxHeight="150dp"></ImageView>
+            <LinearLayout android:layout_width="match_parent" android:orientation="vertical" android:layout_height="0dp" android:id="@+id/focusStealer" android:focusable="true" android:focusableInTouchMode="true"></LinearLayout>
+            <EditText android:layout_height="wrap_content" android:layout_margin="5dp" android:hint="Username" android:cursorVisible="true" android:id="@+id/username" android:imeOptions="actionNext" android:inputType="text" android:layout_width="300dp" android:layout_gravity="center_horizontal">
+            </EditText>
+            <EditText android:layout_height="wrap_content" android:layout_margin="5dp" android:hint="Password" android:id="@+id/password" android:imeOptions="actionGo" android:inputType="text|textPassword" android:layout_marginBottom="0dp" android:layout_width="300dp" android:layout_gravity="center_horizontal"></EditText>
+            <CheckBox android:layout_gravity="center_horizontal" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_margin="5dp" android:text="@string/auto_login" android:layout_marginTop="0dp" android:id="@+id/autoLogin"></CheckBox>
+            <Button android:layout_height="wrap_content" android:layout_gravity="center_horizontal" android:layout_width="100dp" android:layout_marginTop="5dp" android:text="@string/button_login" android:id="@+id/loginBtn"></Button>
+            <TextView android:textAppearance="?android:attr/textAppearanceSmall" android:layout_height="wrap_content" android:layout_gravity="center_horizontal|bottom" android:text="@string/disclaimer" android:id="@+id/textView1" android:layout_width="wrap_content" android:layout_marginTop="30dp"></TextView>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
