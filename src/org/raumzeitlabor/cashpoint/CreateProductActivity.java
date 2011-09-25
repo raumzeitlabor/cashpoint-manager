@@ -4,7 +4,7 @@ import org.raumzeitlabor.cashpoint.client.AsyncTaskCompleteListener;
 import org.raumzeitlabor.cashpoint.client.HttpStatusException;
 import org.raumzeitlabor.cashpoint.client.entities.Session;
 import org.raumzeitlabor.cashpoint.client.tasks.CreateProductTask;
-import org.raumzeitlabor.cashpoint.client.tasks.ShowOrCreateProductTask;
+import org.raumzeitlabor.cashpoint.client.tasks.LookupProductTask;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -118,7 +118,7 @@ public class CreateProductActivity extends Activity {
 		final EditText eanInput = (EditText) findViewById(R.id.productEAN);
 		
 		if (resultCode != RESULT_CANCELED) {
-			ShowOrCreateProductTask task = new ShowOrCreateProductTask(new AsyncTaskCompleteListener() {
+			LookupProductTask task = new LookupProductTask(new AsyncTaskCompleteListener() {
 				private ProgressDialog dialog;
 				
 				@Override

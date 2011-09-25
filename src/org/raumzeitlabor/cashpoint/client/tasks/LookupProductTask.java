@@ -21,11 +21,11 @@ import org.raumzeitlabor.cashpoint.client.entities.Session;
 import android.os.AsyncTask;
 import android.util.Log;
 
-public class ShowOrCreateProductTask extends AsyncTask<String,Void,Product> {
+public class LookupProductTask extends AsyncTask<String,Void,Product> {
 	private Exception error;
 	private final AsyncTaskCompleteListener callback;
 	
-	public ShowOrCreateProductTask(AsyncTaskCompleteListener t) {
+	public LookupProductTask(AsyncTaskCompleteListener t) {
 		this.callback = t;
 	}
 	

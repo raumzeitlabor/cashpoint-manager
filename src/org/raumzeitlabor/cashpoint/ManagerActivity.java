@@ -3,7 +3,7 @@ package org.raumzeitlabor.cashpoint;
 import org.raumzeitlabor.cashpoint.client.AsyncTaskCompleteListener;
 import org.raumzeitlabor.cashpoint.client.entities.Session;
 import org.raumzeitlabor.cashpoint.client.tasks.LogoutTask;
-import org.raumzeitlabor.cashpoint.client.tasks.ShowOrCreateProductTask;
+import org.raumzeitlabor.cashpoint.client.tasks.LookupProductTask;
 import org.raumzeitlabor.cashpoint.menu.MenuArrayAdapter;
 import org.raumzeitlabor.cashpoint.menu.MenuEntry;
 
@@ -83,7 +83,7 @@ public class ManagerActivity extends Activity {
 		
 		if (resultCode != RESULT_CANCELED) {
 			if (scanResult.getFormatName().equals("EAN_8") || scanResult.getFormatName().equals("EAN_13")) {
-				ShowOrCreateProductTask task = new ShowOrCreateProductTask(new AsyncTaskCompleteListener() {
+				LookupProductTask task = new LookupProductTask(new AsyncTaskCompleteListener() {
 					
 					@Override
 					public void onTaskError(Exception error) {
