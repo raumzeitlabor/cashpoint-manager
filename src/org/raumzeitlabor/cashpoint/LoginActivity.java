@@ -17,7 +17,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class LoginActivity extends Activity implements OnClickListener {
+public class LoginActivity extends Activity {
 	private AuthenticationTask task;
 	
 	/** Called when the activity is first created. */
@@ -27,7 +27,34 @@ public class LoginActivity extends Activity implements OnClickListener {
 		setContentView(R.layout.login);
 
 		final Button button = (Button) findViewById(R.id.loginBtn);
-		button.setOnClickListener(this);
+		button.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				button.setEnabled(false);
+				final EditText username = (EditText) findViewById(R.id.username);
+				final EditText password = (EditText) findViewById(R.id.password);
+				final CheckBox saveOnSuccess = (CheckBox) findViewById(R.id.autoLogin);
+				
+				// FOR DEBUGGING
+				username.setText("foobar");
+				password.setText("foobar");
+
+		        // hide virtual keyboard
+		        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+		        imm.hideSoftInputFromWindow(password.getWindowToken(), 0);
+
+				if (username.getText().length() == 0
+						|| password.getText().length() == 0) {
+					Toast.makeText(LoginActivity.this, getString(R.string.form_empty),
+							Toast.LENGTH_SHORT).show();
+					return;
+				}
+
+				task = new AuthenticationTask(LoginActivity.this, username.getText() + "",
+						password.getText() + "", saveOnSuccess.isChecked());
+				task.execute();
+			}
+		});
 		
 		final CheckBox autologin = (CheckBox) findViewById(R.id.autoLogin);
 		final float scale = this.getResources().getDisplayMetrics().density;
@@ -70,31 +97,6 @@ public class LoginActivity extends Activity implements OnClickListener {
 		super.onResume();
 		final EditText password = (EditText) findViewById(R.id.password);
 		password.setText("");
-	}
-
-	@Override
-	public void onClick(View v) {
-		final EditText username = (EditText) findViewById(R.id.username);
-		final EditText password = (EditText) findViewById(R.id.password);
-		final CheckBox saveOnSuccess = (CheckBox) findViewById(R.id.autoLogin);
-		
-		// FOR DEBUGGING
-		username.setText("foobar");
-		password.setText("foobar");
-
-        // hide virtual keyboard
-        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(password.getWindowToken(), 0);
-
-		if (username.getText().length() == 0
-				|| password.getText().length() == 0) {
-			Toast.makeText(this, getString(R.string.login_empty), Toast.LENGTH_SHORT).show();
-			return;
-		}
-
-		task = new AuthenticationTask(this, username.getText() + "",
-				password.getText() + "", saveOnSuccess.isChecked());
-		task.execute();
 	}
 
 //	@Override

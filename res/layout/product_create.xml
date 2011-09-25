@@ -1,0 +1,9 @@
+
+    <LinearLayout android:id="@+id/linearLayout1" android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android" android:padding="5dp" android:orientation="vertical">
+        <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge" android:id="@+id/textView2" android:text="@string/product_create_title"></TextView>
+        <EditText android:layout_height="wrap_content" android:layout_width="match_parent" android:layout_marginTop="10dp" android:id="@+id/productEAN" android:enabled="false" android:focusable="false"></EditText>
+        <EditText android:layout_height="wrap_content" android:layout_width="match_parent" android:layout_marginTop="5dp" android:id="@+id/productName" android:hint="@string/product_create_name" android:imeOptions="actionNext" android:inputType="text" android:maxLength="30">
+        </EditText>
+        <EditText android:layout_height="wrap_content" android:layout_width="match_parent" android:hint="@string/product_create_threshold" android:layout_marginTop="5dp" android:id="@+id/productThreshold" android:imeOptions="actionGo" android:inputType="number" ></EditText>
+        <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center_horizontal" android:layout_marginTop="5dp" android:text="@string/product_create_button" android:paddingLeft="20dp" android:paddingRight="20dp" android:id="@+id/productCreateBtn"></Button>
+    </LinearLayout>

@@ -1,12 +1,12 @@
 package org.raumzeitlabor.cashpoint;
 
-import org.raumzeitlabor.cashpoint.client.Session;
+import org.raumzeitlabor.cashpoint.client.entities.Session;
 import org.raumzeitlabor.cashpoint.client.tasks.LogoutTask;
+import org.raumzeitlabor.cashpoint.client.tasks.ShowOrCreateProductTask;
 import org.raumzeitlabor.cashpoint.menu.MenuArrayAdapter;
 import org.raumzeitlabor.cashpoint.menu.MenuEntry;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Bundle;
@@ -76,12 +76,16 @@ public class ManagerActivity extends Activity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
 		if (resultCode != RESULT_CANCELED) {
-			AlertDialog.Builder info = new AlertDialog.Builder(ManagerActivity.this);
-			info.setMessage("TYPE: "+scanResult.getFormatName()+"\nCODE: "+scanResult.getContents());
-			info.show();
+			if (scanResult.getFormatName().equals("EAN_8")
+					|| scanResult.getFormatName().equals("EAN_13")) {
+				ShowOrCreateProductTask task = new ShowOrCreateProductTask(this, Session.getInstance());
+				task.execute(scanResult.getContents());
+			} else if (scanResult.getFormatName().equals("CODE_128")) {
+				Toast.makeText(ManagerActivity.this, "Cashcard scan", Toast.LENGTH_SHORT).show();
+			}
 		} else {
-			CharSequence cancelmsg = "Scan has been canceled.";
-			Toast.makeText(ManagerActivity.this, cancelmsg, Toast.LENGTH_SHORT).show();
+			Toast.makeText(ManagerActivity.this,
+					getString(R.string.scan_canceled), Toast.LENGTH_SHORT).show();
 		}
 	}
 }

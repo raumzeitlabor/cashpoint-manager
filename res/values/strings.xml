@@ -5,7 +5,7 @@
     <string name="input_username">Username</string>
     <string name="input_password">Password</string>
     <string name="button_login">Login</string>
-    <string name="login_empty">Please fill out all fields.</string>
+    <string name="form_empty">Please fill out all fields.</string>
     <string name="disclaimer">© 2011 RaumZeitLabor e.V.</string>
     <string name="auto_login">Save Credentials</string>
     <string name="logout">Logout</string>
@@ -15,10 +15,24 @@
     <string name="auth_canceled">Authentication has been canceled.</string>
     <string name="auth_wait">Authenticating, please wait...</string>
     <string name="auth_success">Successfully authenticated.</string>
-    <string name="auth_fail">Authentication failed.</string>
+    <string name="auth_fail">Authentication failed</string>
     <string name="logout_wait">Logging out, please wait...</string>
     <string name="logout_success">Successfully signed off.</string>
     <string name="logout_fail">Error while signing off. Please try again.</string>
-    <string name="groups_fetch_wait">Fetching groups, please wait...</string>
-    <string name="groups_fetch_fail">Could not get groups</string>
+    <string name="group_fetch_wait">Fetching groups, please wait...</string>
+    <string name="group_fetch_fail">Could not get groups</string>
+    <string name="group_add_title">Create New Group</string>
+    <string name="group_add_msg">Please enter the name of the group to continue.</string>
+    <string name="group_add_btn_ok">Create</string>
+    <string name="group_add_btn_cancel">Cancel</string>
+    <string name="group_name_descr">Group Name</string>
+    <string name="group_add_fail">Could not create group</string>
+    <string name="group_add_wait">Creating group, please wait...</string>
+    <string name="scan_canceled">Scan has been canceled.</string>
+    <string name="product_lookup_wait">Looking up product, please wait...</string>
+    <string name="product_lookup_fail">Could not lookup product</string>
+    <string name="product_create_title">Create New Product</string>
+    <string name="product_create_button">Create Product</string>
+    <string name="product_create_name">Name</string>
+    <string name="product_create_threshold">Threshold</string>
 </resources>

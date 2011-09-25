@@ -1,6 +1,7 @@
 package org.raumzeitlabor.cashpoint.client.tasks;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ByteArrayEntity;
@@ -15,7 +16,7 @@ import org.raumzeitlabor.cashpoint.R;
 import org.raumzeitlabor.cashpoint.UserActivity;
 import org.raumzeitlabor.cashpoint.client.Cashpoint;
 import org.raumzeitlabor.cashpoint.client.JSONResponseHandler;
-import org.raumzeitlabor.cashpoint.client.Session;
+import org.raumzeitlabor.cashpoint.client.entities.Session;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -59,7 +60,8 @@ public class AuthenticationTask extends AsyncTask<String,Void,Session> {
 	
 	@Override
 	protected void onPostExecute(Session s) {
-		dialog.dismiss();
+		if (dialog.isShowing())
+			dialog.dismiss();
 
 		SharedPreferences settings = context.getPreferences(context.MODE_PRIVATE);
 		Editor e = settings.edit();
@@ -121,6 +123,9 @@ public class AuthenticationTask extends AsyncTask<String,Void,Session> {
 			Log.e(this.getClass().getSimpleName(), e.toString());
 			error = e;
 		} catch (JSONException e) {
+			Log.e(this.getClass().getSimpleName(), e.toString());
+			error = e;
+		} catch (ParseException e) {
 			Log.e(this.getClass().getSimpleName(), e.toString());
 			error = e;
 		} finally {

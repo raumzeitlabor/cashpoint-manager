@@ -1,4 +1,4 @@
-package org.raumzeitlabor.cashpoint.client;
+package org.raumzeitlabor.cashpoint.client.entities;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -18,18 +18,12 @@ public class Session {
 	private final String role;
 	private Date validUntil;
 	
-	public Session(JSONObject response) throws JSONException {
+	public Session(JSONObject response) throws JSONException, ParseException {
 		authtoken = response.getString("auth_token");
 		role = response.getString("role");
 		username = response.getJSONObject("user").getString("name");
-		userid = response.getJSONObject("user").getInt("id");		
-		
-		try {
-			validUntil = parser.parse(response.getString("valid_until"));
-		} catch (ParseException e) {
-			Log.e(this.getClass().getSimpleName(), "Could not parse valid_until date (illegal format)");
-			throw new RuntimeException(e);
-		}
+		userid = response.getJSONObject("user").getInt("id");
+		validUntil = parser.parse(response.getString("valid_until"));
 		
 		this.instance = this;
 	}

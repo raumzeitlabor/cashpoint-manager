@@ -1,7 +1,7 @@
 package org.raumzeitlabor.cashpoint.client.tasks;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.text.ParseException;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -9,16 +9,15 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.raumzeitlabor.cashpoint.CreateProductActivity;
 import org.raumzeitlabor.cashpoint.LoginActivity;
 import org.raumzeitlabor.cashpoint.R;
 import org.raumzeitlabor.cashpoint.client.Cashpoint;
-import org.raumzeitlabor.cashpoint.client.GroupArrayAdapter;
 import org.raumzeitlabor.cashpoint.client.HttpStatusException;
 import org.raumzeitlabor.cashpoint.client.JSONResponseHandler;
-import org.raumzeitlabor.cashpoint.client.entities.Group;
+import org.raumzeitlabor.cashpoint.client.entities.Product;
 import org.raumzeitlabor.cashpoint.client.entities.Session;
 
 import android.app.Activity;
@@ -27,16 +26,16 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.ListView;
 import android.widget.Toast;
 
-public class GetGroupsTask extends AsyncTask<String,Void,ArrayList<Group>> {
+public class ShowOrCreateProductTask extends AsyncTask<String,Void,Product> {
 	private Exception error;
 	private final Activity context;
 	private Dialog dialog;
 	private Session session;
+	private String ean;
 	
-	public GetGroupsTask(Activity context, Session s) {
+	public ShowOrCreateProductTask(Activity context, Session s) {
 		this.context = context;
 		this.session = s;
 	}
@@ -53,11 +52,11 @@ public class GetGroupsTask extends AsyncTask<String,Void,ArrayList<Group>> {
 	
 	@Override
 	protected void onPreExecute() {
-		dialog = ProgressDialog.show(context, "", context.getString(R.string.group_fetch_wait), true);
+		dialog = ProgressDialog.show(context, "", context.getString(R.string.product_lookup_wait), true);
 	}
 	
 	@Override
-	protected void onPostExecute(ArrayList<Group> groupList) {
+	protected void onPostExecute(Product product) {
 		dialog.dismiss();
 		
 		if (error != null) {
@@ -73,16 +72,27 @@ public class GetGroupsTask extends AsyncTask<String,Void,ArrayList<Group>> {
 				}
 			}
 			
-			Toast.makeText(context, context.getString(R.string.group_fetch_fail)+": "
+			Toast.makeText(context, context.getString(R.string.product_lookup_fail)+": "
 					+msg, Toast.LENGTH_LONG).show();
 		} else {
-			final ListView list = (ListView) context.findViewById(R.id.groupList);
-			list.setAdapter(new GroupArrayAdapter(context, groupList));
+			if (product == null) {
+				Intent intent = new Intent(context, CreateProductActivity.class);
+				intent.putExtra("ean", ean);
+				context.startActivity(intent);
+ 			} else {
+ 				Toast.makeText(context, "product found", Toast.LENGTH_LONG).show();
+ 			}
 		}
 	}
 	
 	@Override
-	protected ArrayList<Group> doInBackground(String... params) {
+	protected Product doInBackground(String... params) {
+		if (params.length != 1)
+			return null;
+		
+		// save it for calling the create product activity
+		ean = params[0];
+		
 		HttpParams httpParameters = new BasicHttpParams();
 		
 		// Set the timeout in milliseconds until a connection is established.
@@ -93,23 +103,21 @@ public class GetGroupsTask extends AsyncTask<String,Void,ArrayList<Group>> {
 		HttpConnectionParams.setSoTimeout(httpParameters, 5000);
 		
 		final DefaultHttpClient client = new DefaultHttpClient(httpParameters);
-		HttpGet request = new HttpGet(Cashpoint.ENDPOINT+"/groups?auth_token="
+		HttpGet request = new HttpGet(Cashpoint.ENDPOINT+"/products/"+params[0]+"?auth_token="
 				+session.getAuthtoken());
-
-		final ArrayList<Group> groupList = new ArrayList<Group>();
 		
 		try {
 			HttpResponse response = client.execute(request);
 			int statusCode = response.getStatusLine().getStatusCode();
 			
-			if (statusCode != 200)
+
+			if (statusCode == 404) // 404 => product not found
+				return null;
+			else if (statusCode != 200)
 				throw new HttpStatusException(statusCode);
 			
-			JSONArray object = (JSONArray) new JSONResponseHandler().handleResponse(response);
-			for (int i = 0; i < object.length(); i++) {
-				JSONObject json = (JSONObject) object.get(i);
-				groupList.add(new Group(json));
-			}
+			JSONObject object = (JSONObject) new JSONResponseHandler().handleResponse(response);
+			return new Product(object);
 			
 		} catch (IOException e) {
 			Log.e(this.getClass().getSimpleName(), e.toString());
@@ -120,11 +128,14 @@ public class GetGroupsTask extends AsyncTask<String,Void,ArrayList<Group>> {
 		} catch (JSONException e) {
 			Log.e(this.getClass().getSimpleName(), e.toString());
 			error = e;
+		} catch (ParseException e) {
+			Log.e(this.getClass().getSimpleName(), e.toString());
+			error = e;
 		} finally {
 			client.getConnectionManager().shutdown();
 		}
 		
-		return groupList;
+		return null;
 	}
 
 }

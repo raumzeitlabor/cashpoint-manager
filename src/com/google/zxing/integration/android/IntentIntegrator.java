@@ -118,7 +118,7 @@ public final class IntentIntegrator {
    * same, but uses default English labels.
    */
   public static AlertDialog initiateScan(Activity activity) {
-    return initiateScan(activity, DEFAULT_TITLE, DEFAULT_MESSAGE, DEFAULT_YES, DEFAULT_NO);
+    return initiateScan(activity, DEFAULT_TITLE, DEFAULT_MESSAGE, DEFAULT_YES, DEFAULT_NO, "CODE_128,EAN_8,EAN_13");
   }
 
   /**
@@ -194,7 +194,10 @@ public final class IntentIntegrator {
       // set the desired barcode types
       intentScan.putExtra("SCAN_FORMATS", stringDesiredBarcodeFormats);
     }
-
+    
+//    intentScan.putExtra("SCAN_WIDTH", 600);
+//    intentScan.putExtra("SCAN_HEIGHT", 300);
+    		
     try {
       activity.startActivityForResult(intentScan, REQUEST_CODE);
       return null;

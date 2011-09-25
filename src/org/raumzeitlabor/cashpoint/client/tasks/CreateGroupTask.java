@@ -2,9 +2,13 @@ package org.raumzeitlabor.cashpoint.client.tasks;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.BasicHttpEntity;
+import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
@@ -12,6 +16,7 @@ import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 import org.raumzeitlabor.cashpoint.LoginActivity;
 import org.raumzeitlabor.cashpoint.R;
 import org.raumzeitlabor.cashpoint.client.Cashpoint;
@@ -30,13 +35,13 @@ import android.util.Log;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class GetGroupsTask extends AsyncTask<String,Void,ArrayList<Group>> {
+public class CreateGroupTask extends AsyncTask<String,Void,Group> {
 	private Exception error;
 	private final Activity context;
 	private Dialog dialog;
 	private Session session;
 	
-	public GetGroupsTask(Activity context, Session s) {
+	public CreateGroupTask(Activity context, Session s) {
 		this.context = context;
 		this.session = s;
 	}
@@ -53,11 +58,12 @@ public class GetGroupsTask extends AsyncTask<String,Void,ArrayList<Group>> {
 	
 	@Override
 	protected void onPreExecute() {
-		dialog = ProgressDialog.show(context, "", context.getString(R.string.group_fetch_wait), true);
+		dialog = ProgressDialog.show(context, "",
+				context.getString(R.string.group_add_wait), true);
 	}
 	
 	@Override
-	protected void onPostExecute(ArrayList<Group> groupList) {
+	protected void onPostExecute(Group newGroup) {
 		dialog.dismiss();
 		
 		if (error != null) {
@@ -73,16 +79,28 @@ public class GetGroupsTask extends AsyncTask<String,Void,ArrayList<Group>> {
 				}
 			}
 			
-			Toast.makeText(context, context.getString(R.string.group_fetch_fail)+": "
+			Toast.makeText(context, context.getString(R.string.group_add_fail)+": "
 					+msg, Toast.LENGTH_LONG).show();
 		} else {
 			final ListView list = (ListView) context.findViewById(R.id.groupList);
-			list.setAdapter(new GroupArrayAdapter(context, groupList));
+			((GroupArrayAdapter) list.getAdapter()).add(newGroup);
+			((GroupArrayAdapter) list.getAdapter()).sort(new Comparator<Group>() {
+
+				@Override
+				public int compare(Group object1, Group object2) {
+					return object1.getName().compareTo(object2.getName());
+				}
+				
+			});
+			((GroupArrayAdapter) list.getAdapter()).notifyDataSetChanged();
 		}
 	}
 	
 	@Override
-	protected ArrayList<Group> doInBackground(String... params) {
+	protected Group doInBackground(String... params) {
+		if (params.length != 1)
+			return null;
+		
 		HttpParams httpParameters = new BasicHttpParams();
 		
 		// Set the timeout in milliseconds until a connection is established.
@@ -93,23 +111,22 @@ public class GetGroupsTask extends AsyncTask<String,Void,ArrayList<Group>> {
 		HttpConnectionParams.setSoTimeout(httpParameters, 5000);
 		
 		final DefaultHttpClient client = new DefaultHttpClient(httpParameters);
-		HttpGet request = new HttpGet(Cashpoint.ENDPOINT+"/groups?auth_token="
+		HttpPost request = new HttpPost(Cashpoint.ENDPOINT+"/groups?auth_token="
 				+session.getAuthtoken());
-
-		final ArrayList<Group> groupList = new ArrayList<Group>();
+		request.setHeader("Content-Type", "application/json");
 		
 		try {
+			JSONObject json = new JSONObject();
+			json.put("name", params[0]);
+			request.setEntity(new ByteArrayEntity(json.toString().getBytes("UTF8")));
 			HttpResponse response = client.execute(request);
 			int statusCode = response.getStatusLine().getStatusCode();
 			
-			if (statusCode != 200)
+			if (statusCode != 201)
 				throw new HttpStatusException(statusCode);
 			
-			JSONArray object = (JSONArray) new JSONResponseHandler().handleResponse(response);
-			for (int i = 0; i < object.length(); i++) {
-				JSONObject json = (JSONObject) object.get(i);
-				groupList.add(new Group(json));
-			}
+			JSONObject object = (JSONObject) new JSONResponseHandler().handleResponse(response);
+			return new Group(object.getInt("id"), params[0], 0);
 			
 		} catch (IOException e) {
 			Log.e(this.getClass().getSimpleName(), e.toString());
@@ -124,7 +141,7 @@ public class GetGroupsTask extends AsyncTask<String,Void,ArrayList<Group>> {
 			client.getConnectionManager().shutdown();
 		}
 		
-		return groupList;
+		return null;
 	}
 
 }

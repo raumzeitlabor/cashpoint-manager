@@ -1,4 +1,7 @@
-package org.raumzeitlabor.cashpoint.client;
+package org.raumzeitlabor.cashpoint.client.entities;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class Group {
 	private final String name;
@@ -10,6 +13,12 @@ public class Group {
 		this.name = name;
 		this.id = id;
 		this.count = count;
+	}
+	
+	public Group(JSONObject json) throws JSONException {
+		this.name = json.getString("name");
+		this.id = json.getInt("id");
+		this.count = json.getInt("members");
 	}
 
 	public String getName() {
