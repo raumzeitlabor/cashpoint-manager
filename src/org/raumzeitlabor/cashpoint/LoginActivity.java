@@ -1,6 +1,7 @@
 package org.raumzeitlabor.cashpoint;
 
 import org.raumzeitlabor.cashpoint.client.AsyncTaskCompleteListener;
+import org.raumzeitlabor.cashpoint.client.HttpStatusException;
 import org.raumzeitlabor.cashpoint.client.tasks.AuthenticationTask;
 import org.raumzeitlabor.cashpoint.client.entities.Session;
 
@@ -70,9 +71,18 @@ public class LoginActivity extends Activity {
 					public void onTaskError(Exception error) {
 						LoginActivity.this.removeDialog(DIALOG_AUTH_WAIT);
 						
+						String msg = error.getLocalizedMessage();
+						if (error instanceof HttpStatusException) {
+							if (((HttpStatusException) error).getStatus() == 401) {
+								msg = LoginActivity.this.getString(R.string.auth_refused);
+							} else if (((HttpStatusException) error).getStatus() == 403) {
+								msg = LoginActivity.this.getString(R.string.auth_blocked);
+							}
+						}
+						
 						Toast.makeText(LoginActivity.this,
 								LoginActivity.this.getString(R.string.auth_fail)+": "
-								+error.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+								+msg, Toast.LENGTH_LONG).show();
 					}
 
 					@Override

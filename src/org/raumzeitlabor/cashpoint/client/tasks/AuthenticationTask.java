@@ -3,6 +3,7 @@ package org.raumzeitlabor.cashpoint.client.tasks;
 import java.io.IOException;
 import java.text.ParseException;
 
+import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -16,6 +17,7 @@ import org.raumzeitlabor.cashpoint.R;
 import org.raumzeitlabor.cashpoint.UserActivity;
 import org.raumzeitlabor.cashpoint.client.AsyncTaskCompleteListener;
 import org.raumzeitlabor.cashpoint.client.Cashpoint;
+import org.raumzeitlabor.cashpoint.client.HttpStatusException;
 import org.raumzeitlabor.cashpoint.client.JSONResponseHandler;
 import org.raumzeitlabor.cashpoint.client.entities.Session;
 
@@ -77,8 +79,15 @@ public class AuthenticationTask extends AsyncTask<Object,Void,Session> {
 			json.put("passwd", params[1]);
 			
 			request.setEntity(new ByteArrayEntity(json.toString().getBytes("utf-8")));
-			JSONObject response = (JSONObject) client.execute(request, new JSONResponseHandler());
-			s = new Session(response);
+			HttpResponse response = client.execute(request);
+			int statusCode = response.getStatusLine().getStatusCode();
+			
+			if (statusCode != 200)
+				throw new HttpStatusException(statusCode);
+			
+			JSONObject jsonresp = (JSONObject) new JSONResponseHandler().handleResponse(response);
+			s = new Session(jsonresp);
+			
 		} catch (IOException e) {
 			Log.e(this.getClass().getSimpleName(), e.toString());
 			error = e;
@@ -86,6 +95,9 @@ public class AuthenticationTask extends AsyncTask<Object,Void,Session> {
 			Log.e(this.getClass().getSimpleName(), e.toString());
 			error = e;
 		} catch (ParseException e) {
+			Log.e(this.getClass().getSimpleName(), e.toString());
+			error = e;
+		} catch (HttpStatusException e) {
 			Log.e(this.getClass().getSimpleName(), e.toString());
 			error = e;
 		} finally {

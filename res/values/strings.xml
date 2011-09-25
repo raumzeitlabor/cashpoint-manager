@@ -42,4 +42,6 @@
     <string name="product_create_ean">EAN</string>
     <string name="product_create_wait">Creating product, please wait...</string>
     <string name="product_create_fail">Could not create product</string>
+    <string name="auth_refused">Wrong username or password.</string>
+    <string name="auth_blocked">Too many failed logins, please wait and try again later.</string>
 </resources>
