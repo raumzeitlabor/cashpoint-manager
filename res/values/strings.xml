@@ -35,4 +35,11 @@
     <string name="product_create_button">Create Product</string>
     <string name="product_create_name">Name</string>
     <string name="product_create_threshold">Threshold</string>
+    <string name="group_fetch_empty">No groups have been defined yet.</string>
+    <string name="product_fetch_empty">No products could be found.</string>
+    <string name="product_fetch_fail">Could not fetch products</string>
+    <string name="product_fetch_wait">Fetching products, please wait...</string>
+    <string name="product_create_ean">EAN</string>
+    <string name="product_create_wait">Creating product, please wait...</string>
+    <string name="product_create_fail">Could not create product</string>
 </resources>

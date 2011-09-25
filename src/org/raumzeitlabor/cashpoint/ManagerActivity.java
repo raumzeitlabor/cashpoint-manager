@@ -30,7 +30,7 @@ public class ManagerActivity extends Activity {
 		
 		final MenuEntry[] entries = {
 			new MenuEntry("Groups", "Create new groups or add users to existing.", GroupActivity.class),
-			new MenuEntry("Products", "Create new or manage existing products."),
+			new MenuEntry("Products", "Create new or manage existing products.", ProductActivity.class),
 			new MenuEntry("Cashcards", "Activate new or manage existing cashcards."),
 			new MenuEntry("Statistics", "Get detailed information on cashpoint entities."),
 		};

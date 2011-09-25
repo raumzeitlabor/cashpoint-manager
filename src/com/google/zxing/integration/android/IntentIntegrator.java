@@ -120,6 +120,10 @@ public final class IntentIntegrator {
   public static AlertDialog initiateScan(Activity activity) {
     return initiateScan(activity, DEFAULT_TITLE, DEFAULT_MESSAGE, DEFAULT_YES, DEFAULT_NO, "CODE_128,EAN_8,EAN_13");
   }
+  
+  public static AlertDialog initiateScan(Activity activity, String codes) {
+	    return initiateScan(activity, DEFAULT_TITLE, DEFAULT_MESSAGE, DEFAULT_YES, DEFAULT_NO, codes);
+  }
 
   /**
    * See {@link #initiateScan(Activity, CharSequence, CharSequence, CharSequence, CharSequence)} --

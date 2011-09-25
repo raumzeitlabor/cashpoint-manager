@@ -30,6 +30,10 @@
         <activity android:name=".GroupActivity"
                   android:label="@string/app_name">               
         </activity>  
+        
+        <activity android:name=".ProductActivity"
+                  android:label="@string/app_name">               
+        </activity>  
              
         <activity android:name=".CreateProductActivity"
                   android:label="@string/app_name">               

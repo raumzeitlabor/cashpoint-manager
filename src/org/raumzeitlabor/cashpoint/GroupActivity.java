@@ -21,8 +21,8 @@ public class GroupActivity extends Activity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.group);
-			
-		ImageButton addbtn = (ImageButton) findViewById(R.id.addBtn);
+		
+		final ImageButton addbtn = (ImageButton) findViewById(R.id.addBtn);
 		addbtn.setOnClickListener(new OnClickListener() {
 
 			@Override

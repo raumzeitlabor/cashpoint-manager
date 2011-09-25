@@ -49,7 +49,7 @@ public class CreateProductTask extends AsyncTask<String,Void,Boolean> {
 	@Override
 	protected void onPreExecute() {
 		dialog = ProgressDialog.show(context, "",
-				context.getString(R.string.group_add_wait), true);
+				context.getString(R.string.product_create_wait), true);
 	}
 	
 	@Override
@@ -69,7 +69,7 @@ public class CreateProductTask extends AsyncTask<String,Void,Boolean> {
 				}
 			}
 			
-			Toast.makeText(context, context.getString(R.string.group_add_fail)+": "
+			Toast.makeText(context, context.getString(R.string.product_create_fail)+": "
 					+msg, Toast.LENGTH_LONG).show();
 		} else {
 			Toast.makeText(context, "Product created.", Toast.LENGTH_LONG).show();
