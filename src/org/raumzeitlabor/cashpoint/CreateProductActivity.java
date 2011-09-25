@@ -1,5 +1,7 @@
 package org.raumzeitlabor.cashpoint;
 
+import org.raumzeitlabor.cashpoint.client.AsyncTaskCompleteListener;
+import org.raumzeitlabor.cashpoint.client.HttpStatusException;
 import org.raumzeitlabor.cashpoint.client.entities.Session;
 import org.raumzeitlabor.cashpoint.client.tasks.CreateProductTask;
 import org.raumzeitlabor.cashpoint.client.tasks.ShowOrCreateProductTask;
@@ -8,6 +10,7 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -108,18 +111,57 @@ public class CreateProductActivity extends Activity {
 			
 		});
 	}
-
+	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+		final IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+		final EditText eanInput = (EditText) findViewById(R.id.productEAN);
+		
 		if (resultCode != RESULT_CANCELED) {
-//			ShowOrCreateProductTask task = new ShowOrCreateProductTask(this, Session.getInstance());
-//			task.execute(scanResult.getContents());
+			ShowOrCreateProductTask task = new ShowOrCreateProductTask(new AsyncTaskCompleteListener() {
+				private ProgressDialog dialog;
+				
+				@Override
+				public <Product> void onTaskComplete(Product product) {
+					dialog.dismiss();
+					
+					if (product != null) {
+			 			Toast.makeText(CreateProductActivity.this, "product found", Toast.LENGTH_LONG).show();
+			 		} else {
+						eanInput.setText(scanResult.getContents());
+						eanInput.setFocusable(false);
+						eanInput.setEnabled(false);
+			 		}
+				}
+
+				@Override
+				public void onTaskError(Exception error) {
+					dialog.dismiss();
+					String msg = error.getLocalizedMessage();
+					
+					if (error instanceof HttpStatusException) {
+						if (((HttpStatusException) error).getStatus() == 401) {
+							Session.getInstance().destroy();
+							Intent intent = new Intent(CreateProductActivity.this, LoginActivity.class);
+							intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+							CreateProductActivity.this.startActivity(intent);
+							msg = CreateProductActivity.this.getString(R.string.auth_fail);
+						}
+					}
+					
+					Toast.makeText(CreateProductActivity.this,
+							CreateProductActivity.this.getString(R.string.product_lookup_fail)+": "
+							+msg, Toast.LENGTH_LONG).show();
+				}
+
+				@Override
+				public void onTaskStart() {
+					dialog = ProgressDialog.show(CreateProductActivity.this, "",
+							CreateProductActivity.this.getString(R.string.product_lookup_wait), true);
+				}
+			});
 			
-			final EditText eanInput = (EditText) findViewById(R.id.productEAN);
-			eanInput.setText(scanResult.getContents());
-			eanInput.setFocusable(false);
-			eanInput.setEnabled(false);
+			task.execute(scanResult.getContents());
 		} else {
 			Toast.makeText(this, getString(R.string.scan_canceled), Toast.LENGTH_SHORT).show();
 		}

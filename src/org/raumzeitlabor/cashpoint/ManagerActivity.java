@@ -1,5 +1,6 @@
 package org.raumzeitlabor.cashpoint;
 
+import org.raumzeitlabor.cashpoint.client.AsyncTaskCompleteListener;
 import org.raumzeitlabor.cashpoint.client.entities.Session;
 import org.raumzeitlabor.cashpoint.client.tasks.LogoutTask;
 import org.raumzeitlabor.cashpoint.client.tasks.ShowOrCreateProductTask;
@@ -7,6 +8,8 @@ import org.raumzeitlabor.cashpoint.menu.MenuArrayAdapter;
 import org.raumzeitlabor.cashpoint.menu.MenuEntry;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,6 +26,8 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 public class ManagerActivity extends Activity {	
+	private final int DIALOG_LOOKUP_WAIT = 0;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -74,11 +79,35 @@ public class ManagerActivity extends Activity {
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+		final IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+		
 		if (resultCode != RESULT_CANCELED) {
-			if (scanResult.getFormatName().equals("EAN_8")
-					|| scanResult.getFormatName().equals("EAN_13")) {
-				ShowOrCreateProductTask task = new ShowOrCreateProductTask(this, Session.getInstance());
+			if (scanResult.getFormatName().equals("EAN_8") || scanResult.getFormatName().equals("EAN_13")) {
+				ShowOrCreateProductTask task = new ShowOrCreateProductTask(new AsyncTaskCompleteListener() {
+					
+					@Override
+					public void onTaskError(Exception error) {
+						ManagerActivity.this.dismissDialog(DIALOG_LOOKUP_WAIT);
+					}
+					
+					@Override
+					public <Product> void onTaskComplete(Product product) {
+						ManagerActivity.this.removeDialog(DIALOG_LOOKUP_WAIT);
+						
+						if (product == null) {
+							Intent intent = new Intent(ManagerActivity.this, CreateProductActivity.class);
+							intent.putExtra("ean", scanResult.getContents());
+							ManagerActivity.this.startActivity(intent);
+						} else {
+							Toast.makeText(ManagerActivity.this, "product found", Toast.LENGTH_LONG).show();
+						}
+					}
+
+					@Override
+					public void onTaskStart() {
+						ManagerActivity.this.removeDialog(DIALOG_LOOKUP_WAIT);
+					}
+				});
 				task.execute(scanResult.getContents());
 			} else if (scanResult.getFormatName().equals("CODE_128")) {
 				Toast.makeText(ManagerActivity.this, "Cashcard scan", Toast.LENGTH_SHORT).show();
@@ -87,5 +116,18 @@ public class ManagerActivity extends Activity {
 			Toast.makeText(ManagerActivity.this,
 					getString(R.string.scan_canceled), Toast.LENGTH_SHORT).show();
 		}
+	}
+
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		Dialog dialog = null;
+		
+		switch (id) {
+		case DIALOG_LOOKUP_WAIT:
+			dialog = ProgressDialog.show(this, "", getString(R.string.product_lookup_wait), true);
+			break;
+		}
+		
+		return dialog;
 	}
 }

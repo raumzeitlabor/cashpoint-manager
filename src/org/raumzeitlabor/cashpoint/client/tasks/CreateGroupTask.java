@@ -47,16 +47,6 @@ public class CreateGroupTask extends AsyncTask<String,Void,Group> {
 	}
 	
 	@Override
-	protected void onCancelled() {
-		dialog.dismiss();
-//		Builder builder = new AlertDialog.Builder(context);
-//		builder.setMessage(context.getString(R.string.auth_canceled));
-//		dialog = builder.create();
-//		dialog.show();
-		Toast.makeText(context, "foo", Toast.LENGTH_SHORT).show();
-	}
-	
-	@Override
 	protected void onPreExecute() {
 		dialog = ProgressDialog.show(context, "",
 				context.getString(R.string.group_add_wait), true);

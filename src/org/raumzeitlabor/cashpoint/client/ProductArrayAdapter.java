@@ -16,10 +16,10 @@ public class ProductArrayAdapter extends ArrayAdapter<Product> {
 	private final Activity context;
 	private final ArrayList<Product> productList;
 	
-	public ProductArrayAdapter(Activity context, ArrayList<Product> groupList2) {
-		super(context, R.layout.product_item, groupList2);
+	public ProductArrayAdapter(Activity context, ArrayList<Product> productList2) {
+		super(context, R.layout.product_item, (ArrayList)productList2);
 		this.context = context;
-		this.productList = groupList2;
+		this.productList = productList2;
 	}
 
 	@Override

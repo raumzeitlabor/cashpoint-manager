@@ -1,10 +1,16 @@
 package org.raumzeitlabor.cashpoint;
 
+import org.raumzeitlabor.cashpoint.client.AsyncTaskCompleteListener;
 import org.raumzeitlabor.cashpoint.client.tasks.AuthenticationTask;
+import org.raumzeitlabor.cashpoint.client.entities.Session;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -18,22 +24,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class LoginActivity extends Activity {
-	private AuthenticationTask task;
+	private final int DIALOG_AUTH_WAIT = 0;
 	
-	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login);
 
 		final Button button = (Button) findViewById(R.id.loginBtn);
+		final CheckBox autologin = (CheckBox) findViewById(R.id.autoLogin);
+		final EditText username = (EditText) findViewById(R.id.username);
+		final EditText password = (EditText) findViewById(R.id.password);
+		
 		button.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				button.setEnabled(false);
 				final EditText username = (EditText) findViewById(R.id.username);
 				final EditText password = (EditText) findViewById(R.id.password);
-				final CheckBox saveOnSuccess = (CheckBox) findViewById(R.id.autoLogin);
+				
 				
 				// FOR DEBUGGING
 				username.setText("foobar");
@@ -50,22 +58,68 @@ public class LoginActivity extends Activity {
 					return;
 				}
 
-				task = new AuthenticationTask(LoginActivity.this, username.getText() + "",
-						password.getText() + "", saveOnSuccess.isChecked());
-				task.execute();
+				AuthenticationTask task = new AuthenticationTask(new AsyncTaskCompleteListener() {
+					private final CheckBox saveOnSuccess = (CheckBox) findViewById(R.id.autoLogin);
+					
+					@Override
+					public void onTaskStart() {
+						LoginActivity.this.showDialog(DIALOG_AUTH_WAIT);
+					}
+
+					@Override
+					public void onTaskError(Exception error) {
+						LoginActivity.this.removeDialog(DIALOG_AUTH_WAIT);
+						
+						Toast.makeText(LoginActivity.this,
+								LoginActivity.this.getString(R.string.auth_fail)+": "
+								+error.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+					}
+
+					@Override
+					public <Session> void onTaskComplete(Session session) {
+						LoginActivity.this.removeDialog(DIALOG_AUTH_WAIT);
+						
+						SharedPreferences settings = LoginActivity.this.getPreferences(LoginActivity.this.MODE_PRIVATE);
+						Editor e = settings.edit();
+						
+						if (session != null) {
+							// W. Z. F. §%(/§)$)="="=!=!!!!
+							if (((org.raumzeitlabor.cashpoint.client.entities.Session) session).getRole().equals("admin"))
+								LoginActivity.this.startActivity(new Intent(LoginActivity.this, ManagerActivity.class));
+							else
+								LoginActivity.this.startActivity(new Intent(LoginActivity.this, UserActivity.class));
+
+							Toast.makeText(LoginActivity.this, LoginActivity.this.getString(R.string.auth_success),
+									Toast.LENGTH_SHORT).show();
+
+							if (saveOnSuccess.isChecked()) {
+								e.putString("username", username.getText().toString());
+								e.putString("password", password.getText().toString());
+								e.putBoolean("autologin", true);
+								e.commit();
+								return;
+							}
+						}
+						
+						e.remove("username");
+						e.remove("password");
+						e.remove("autologin");
+						e.commit();
+					}
+					
+				});
+				
+				task.execute(username.getText().toString(), password.getText().toString());
+				
 			}
 		});
 		
-		final CheckBox autologin = (CheckBox) findViewById(R.id.autoLogin);
 		final float scale = this.getResources().getDisplayMetrics().density;
 		autologin.setPadding(autologin.getPaddingLeft() + (int)(10.0f * scale + 0.5f),
 		        autologin.getPaddingTop(),
 		        autologin.getPaddingRight(),
 		        autologin.getPaddingBottom());
 		
-		final EditText username = (EditText) findViewById(R.id.username);
-		
-		final EditText password = (EditText) findViewById(R.id.password);
 		password.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 			@Override
 			public boolean onEditorAction(TextView v, int actionId,
@@ -79,7 +133,7 @@ public class LoginActivity extends Activity {
 	    });
 		
 		// autologin
-		SharedPreferences settings = getPreferences(this.MODE_PRIVATE);
+		SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
 		if (settings.getBoolean("autologin", false)) {
 			String user = settings.getString("username", null);
 			String passwd = settings.getString("password", null);
@@ -87,23 +141,22 @@ public class LoginActivity extends Activity {
 			if (user != null && passwd != null) {
 				username.setText(user);
 				password.setText(passwd);
+				autologin.setChecked(true);
 				button.performClick();
 			}
 		}
 	}
 
 	@Override
-	protected void onResume() {
-		super.onResume();
-		final EditText password = (EditText) findViewById(R.id.password);
-		password.setText("");
+	protected Dialog onCreateDialog(int id) {
+		Dialog dialog = null;
+		
+		switch(id) {
+		case DIALOG_AUTH_WAIT:
+			dialog = ProgressDialog.show(this, "", getString(R.string.auth_wait), true);
+			break;
+		}
+		
+		return dialog;
 	}
-
-//	@Override
-//	public void onBackPressed() {
-//		Toast.makeText(this, "BACK", Toast.LENGTH_SHORT).show();
-//		if (task != null) {
-//			task.cancel(true);
-//		}
-//	}
 }

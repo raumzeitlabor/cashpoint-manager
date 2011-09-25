@@ -4,7 +4,9 @@
         <LinearLayout android:layout_height="match_parent" android:orientation="vertical" android:layout_gravity="fill_horizontal" android:layout_width="wrap_content" android:layout_weight="1" android:id="@+id/filler">
         </LinearLayout>
         <View android:layout_height="fill_parent" android:layout_width="1px" android:background="#90AAAAAA"/>
-        <ImageButton android:background="@drawable/gradient" android:layout_height="match_parent" android:layout_width="50dp" android:id="@+id/addBtn" android:src="@drawable/add"></ImageButton>
+        <ImageButton android:layout_height="match_parent" android:src="@drawable/refresh" android:layout_width="50dp" android:background="@null" android:id="@+id/refreshBtn"></ImageButton>
         <View android:layout_height="fill_parent" android:layout_width="1px" android:background="#90AAAAAA"/>
-        <ImageButton android:background="@drawable/gradient" android:layout_height="match_parent" android:layout_width="50dp" android:id="@+id/searchBtn" android:src="@drawable/magnifier"></ImageButton>
+        <ImageButton android:background="@null" android:layout_height="match_parent" android:layout_width="50dp" android:id="@+id/addBtn" android:src="@drawable/add"></ImageButton>
+        <View android:layout_height="fill_parent" android:layout_width="1px" android:background="#90AAAAAA"/>
+        <ImageButton android:background="@null" android:layout_height="match_parent" android:layout_width="50dp" android:id="@+id/searchBtn" android:src="@drawable/magnifier"></ImageButton>
     </LinearLayout>
