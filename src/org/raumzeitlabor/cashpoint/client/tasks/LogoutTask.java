@@ -41,18 +41,19 @@ public class LogoutTask extends AsyncTask<String,Void,Integer> {
 	protected void onPostExecute(Integer status) {
 		dialog.dismiss();
 		
-		if (status == 200) {
-			Toast.makeText(context, context.getString(R.string.logout_success),
-					Toast.LENGTH_SHORT).show();
-			context.finish();
-		} else if (status == 401) {
+//		if (status == 200) {
+//			Toast.makeText(context, context.getString(R.string.logout_success),
+//					Toast.LENGTH_SHORT).show();
+////			context.finish();
+//		} else
+		if (status == 200 || status == 401) {
 			Session.getInstance().destroy();
 			
 			// see http://stackoverflow.com/questions/3007998/on-logout-clear-activity-history-stack-preventing-back-button-from-opening-lo
 			Intent intent = new Intent(context, LoginActivity.class);
 			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			intent.putExtra("signedoff", true);
 			context.startActivity(intent);
-			
 		} else {
 			Toast.makeText(context, context.getString(R.string.logout_fail),
 					Toast.LENGTH_SHORT).show();

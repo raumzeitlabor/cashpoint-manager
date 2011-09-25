@@ -43,7 +43,6 @@ public class LoginActivity extends Activity {
 				final EditText username = (EditText) findViewById(R.id.username);
 				final EditText password = (EditText) findViewById(R.id.password);
 				
-				
 				// FOR DEBUGGING
 				username.setText("foobar");
 				password.setText("foobar");
@@ -120,7 +119,6 @@ public class LoginActivity extends Activity {
 				});
 				
 				task.execute(username.getText().toString(), password.getText().toString());
-				
 			}
 		});
 		
@@ -144,6 +142,14 @@ public class LoginActivity extends Activity {
 		
 		// autologin
 		SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
+		
+		// check if we have been sent here because we signed off
+		boolean signedoff = false;
+		if (getIntent().getExtras() != null) {
+			if (getIntent().getExtras().containsKey("signedoff"))
+				signedoff = true;
+		}
+		
 		if (settings.getBoolean("autologin", false)) {
 			String user = settings.getString("username", null);
 			String passwd = settings.getString("password", null);
@@ -152,7 +158,9 @@ public class LoginActivity extends Activity {
 				username.setText(user);
 				password.setText(passwd);
 				autologin.setChecked(true);
-				button.performClick();
+				
+				if (!signedoff)
+					button.performClick();
 			}
 		}
 	}
