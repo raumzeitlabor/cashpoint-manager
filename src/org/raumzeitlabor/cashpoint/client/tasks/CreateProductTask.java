@@ -4,11 +4,7 @@ import java.io.IOException;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
+import org.apache.http.entity.StringEntity;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.raumzeitlabor.cashpoint.R;
@@ -81,7 +77,7 @@ public class CreateProductTask extends AsyncTask<String,Void,Boolean> {
 			json.put("name", params[1]);			
 			json.put("threshold", params[2]);
 			
-			request.setEntity(new ByteArrayEntity(json.toString().getBytes("UTF8")));
+			request.setEntity(new StringEntity(json.toString(), "UTF-8"));
 			HttpResponse response = Cashpoint.getHttpClient().execute(request);
 			int statusCode = response.getStatusLine().getStatusCode();
 			

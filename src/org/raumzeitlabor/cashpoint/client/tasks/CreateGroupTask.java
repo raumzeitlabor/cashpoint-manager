@@ -1,22 +1,13 @@
 package org.raumzeitlabor.cashpoint.client.tasks;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Comparator;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.BasicHttpEntity;
-import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
-import org.json.JSONArray;
+import org.apache.http.entity.StringEntity;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 import org.raumzeitlabor.cashpoint.R;
 import org.raumzeitlabor.cashpoint.activities.LoginActivity;
 import org.raumzeitlabor.cashpoint.client.Cashpoint;
@@ -98,7 +89,7 @@ public class CreateGroupTask extends AsyncTask<String,Void,Group> {
 		try {
 			JSONObject json = new JSONObject();
 			json.put("name", params[0]);
-			request.setEntity(new ByteArrayEntity(json.toString().getBytes("UTF8")));
+			request.setEntity(new StringEntity(json.toString(), "UTF-8"));
 			HttpResponse response = Cashpoint.getHttpClient().execute(request);
 			int statusCode = response.getStatusLine().getStatusCode();
 			

@@ -85,10 +85,10 @@ public class GroupActivity extends Activity {
 					}
 				});
 
-				alert.setNegativeButton(getString(R.string.group_add_btn_cancel),
-						new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int whichButton) {}
-				});
+//				alert.setNegativeButton(getString(R.string.group_add_btn_cancel),
+//						new DialogInterface.OnClickListener() {
+//					public void onClick(DialogInterface dialog, int whichButton) {}
+//				});
 				
 				alert.create().show();
 			}

@@ -14,6 +14,7 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -30,7 +31,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class CreateProductActivity extends Activity {
-
+	private final int DIALOG_PRODUCT_LOOKUP_WAIT = 0;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -127,7 +129,7 @@ public class CreateProductActivity extends Activity {
 				
 				@Override
 				public <Product> void onTaskComplete(Product product) {
-					dialog.dismiss();
+					CreateProductActivity.this.removeDialog(DIALOG_PRODUCT_LOOKUP_WAIT);
 					
 					if (product != null) {
 			 			Toast.makeText(CreateProductActivity.this, "product found", Toast.LENGTH_LONG).show();
@@ -140,7 +142,7 @@ public class CreateProductActivity extends Activity {
 
 				@Override
 				public void onTaskError(Exception error) {
-					dialog.dismiss();
+					CreateProductActivity.this.removeDialog(DIALOG_PRODUCT_LOOKUP_WAIT);
 					String msg = error.getLocalizedMessage();
 					
 					if (error instanceof HttpStatusException) {
@@ -160,8 +162,7 @@ public class CreateProductActivity extends Activity {
 
 				@Override
 				public void onTaskStart() {
-					dialog = ProgressDialog.show(CreateProductActivity.this, "",
-							CreateProductActivity.this.getString(R.string.product_lookup_wait), true);
+					CreateProductActivity.this.showDialog(DIALOG_PRODUCT_LOOKUP_WAIT);
 				}
 			});
 			
@@ -169,5 +170,19 @@ public class CreateProductActivity extends Activity {
 		} else {
 			Toast.makeText(this, getString(R.string.scan_canceled), Toast.LENGTH_SHORT).show();
 		}
+	}
+
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		Dialog dialog = null;
+		
+		switch(id) {
+		case DIALOG_PRODUCT_LOOKUP_WAIT:
+			dialog = ProgressDialog.show(CreateProductActivity.this, "",
+					CreateProductActivity.this.getString(R.string.product_lookup_wait), true);
+			break;
+		}
+		
+		return dialog;
 	}
 }
