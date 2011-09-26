@@ -9,6 +9,7 @@
 	
     <application android:icon="@drawable/cashregister" android:label="@string/app_name" 
                   android:theme="@android:style/Theme.Black.NoTitleBar">
+        
         <activity android:name=".activities.LoginActivity"
                   android:label="@string/app_name">
       		<intent-filter>
@@ -17,21 +18,21 @@
             </intent-filter>   
         </activity>
         
-        <activity android:name=".ManagerActivity"
+        <activity android:name=".activities.ManagerActivity"
                   android:label="@string/app_name">
         </activity>
         
-        <activity android:name=".UserActivity"
+        <activity android:name=".activities.UserActivity"
                   android:label="@string/app_name">               
         </activity>
-        <activity android:name=".GroupActivity"
+        <activity android:name=".activities.GroupActivity"
                   android:label="@string/app_name">               
         </activity>  
         
         <activity android:name=".activities.ProductActivity"
                   android:label="@string/app_name">               
         </activity>  
-        <activity android:name=".CreateProductActivity"
+        <activity android:name=".activities.CreateProductActivity"
                   android:label="@string/app_name">               
         </activity>
 
