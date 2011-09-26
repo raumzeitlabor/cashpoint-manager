@@ -1,5 +1,9 @@
-package org.raumzeitlabor.cashpoint;
+package org.raumzeitlabor.cashpoint.activities;
 
+import org.raumzeitlabor.cashpoint.R;
+import org.raumzeitlabor.cashpoint.R.id;
+import org.raumzeitlabor.cashpoint.R.layout;
+import org.raumzeitlabor.cashpoint.R.string;
 import org.raumzeitlabor.cashpoint.client.AsyncTaskCompleteListener;
 import org.raumzeitlabor.cashpoint.client.HttpStatusException;
 import org.raumzeitlabor.cashpoint.client.entities.Session;

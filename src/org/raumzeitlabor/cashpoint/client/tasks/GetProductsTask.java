@@ -47,23 +47,13 @@ public class GetProductsTask extends AsyncTask<String,Void,ArrayList<Product>> {
 	
 	@Override
 	protected ArrayList<Product> doInBackground(String... params) {
-		HttpParams httpParameters = new BasicHttpParams();
-		
-		// Set the timeout in milliseconds until a connection is established.
-		HttpConnectionParams.setConnectionTimeout(httpParameters, 3000);
-		
-		// Set the default socket timeout (SO_TIMEOUT) 
-		// in milliseconds which is the timeout for waiting for data.
-		HttpConnectionParams.setSoTimeout(httpParameters, 5000);
-		
-		final DefaultHttpClient client = new DefaultHttpClient(httpParameters);
 		HttpGet request = new HttpGet(Cashpoint.ENDPOINT+"/products?auth_token="
 				+Session.getInstance().getAuthtoken());
 
 		final ArrayList<Product> productList = new ArrayList<Product>();
 		
 		try {
-			HttpResponse response = client.execute(request);
+			HttpResponse response = Cashpoint.getHttpClient().execute(request);
 			int statusCode = response.getStatusLine().getStatusCode();
 			
 			if (statusCode != 200)
@@ -87,8 +77,6 @@ public class GetProductsTask extends AsyncTask<String,Void,ArrayList<Product>> {
 		} catch (ParseException e) {
 			Log.e(this.getClass().getSimpleName(), e.toString());
 			error = e;
-		} finally {
-			client.getConnectionManager().shutdown();
 		}
 		
 		return productList;

@@ -9,10 +9,8 @@
 	
     <application android:icon="@drawable/cashregister" android:label="@string/app_name" 
                   android:theme="@android:style/Theme.Black.NoTitleBar">
-        <activity android:name=".LoginActivity"
-                  android:label="@string/app_name"
-                  android:noHistory="true"
-                  android:launchMode="singleInstance">
+        <activity android:name=".activities.LoginActivity"
+                  android:label="@string/app_name">
       		<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -26,15 +24,13 @@
         <activity android:name=".UserActivity"
                   android:label="@string/app_name">               
         </activity>
-        
         <activity android:name=".GroupActivity"
                   android:label="@string/app_name">               
         </activity>  
         
-        <activity android:name=".ProductActivity"
+        <activity android:name=".activities.ProductActivity"
                   android:label="@string/app_name">               
         </activity>  
-             
         <activity android:name=".CreateProductActivity"
                   android:label="@string/app_name">               
         </activity>

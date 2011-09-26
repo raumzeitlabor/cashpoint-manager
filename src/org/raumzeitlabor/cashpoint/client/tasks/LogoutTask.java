@@ -8,8 +8,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
-import org.raumzeitlabor.cashpoint.LoginActivity;
 import org.raumzeitlabor.cashpoint.R;
+import org.raumzeitlabor.cashpoint.activities.LoginActivity;
 import org.raumzeitlabor.cashpoint.client.Cashpoint;
 import org.raumzeitlabor.cashpoint.client.entities.Session;
 
@@ -54,6 +54,7 @@ public class LogoutTask extends AsyncTask<String,Void,Integer> {
 			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			intent.putExtra("signedoff", true);
 			context.startActivity(intent);
+			
 		} else {
 			Toast.makeText(context, context.getString(R.string.logout_fail),
 					Toast.LENGTH_SHORT).show();
@@ -62,21 +63,11 @@ public class LogoutTask extends AsyncTask<String,Void,Integer> {
 	
 	@Override
 	protected Integer doInBackground(String... params) {
-		HttpParams httpParameters = new BasicHttpParams();
-		
-		// Set the timeout in milliseconds until a connection is established.
-		HttpConnectionParams.setConnectionTimeout(httpParameters, 3000);
-		
-		// Set the default socket timeout (SO_TIMEOUT) 
-		// in milliseconds which is the timeout for waiting for data.
-		HttpConnectionParams.setSoTimeout(httpParameters, 5000);
-		
-		final DefaultHttpClient client = new DefaultHttpClient(httpParameters);
 		HttpDelete request = new HttpDelete(Cashpoint.ENDPOINT+"/auth?auth_token="
 				+session.getAuthtoken());
 
 		try {
-			HttpResponse response = client.execute(request);
+			HttpResponse response = Cashpoint.getHttpClient().execute(request);
 			int statusCode = response.getStatusLine().getStatusCode();
 			
 //			if (statusCode != 200) {
@@ -88,8 +79,6 @@ public class LogoutTask extends AsyncTask<String,Void,Integer> {
 		} catch (IOException e) {
 			Log.e(this.getClass().getSimpleName(), e.toString());
 			error = e;
-		} finally {
-			client.getConnectionManager().shutdown();
 		}
 		
 		return 0;

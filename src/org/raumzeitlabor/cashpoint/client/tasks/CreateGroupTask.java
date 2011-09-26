@@ -17,8 +17,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
-import org.raumzeitlabor.cashpoint.LoginActivity;
 import org.raumzeitlabor.cashpoint.R;
+import org.raumzeitlabor.cashpoint.activities.LoginActivity;
 import org.raumzeitlabor.cashpoint.client.Cashpoint;
 import org.raumzeitlabor.cashpoint.client.GroupArrayAdapter;
 import org.raumzeitlabor.cashpoint.client.HttpStatusException;
@@ -91,16 +91,6 @@ public class CreateGroupTask extends AsyncTask<String,Void,Group> {
 		if (params.length != 1)
 			return null;
 		
-		HttpParams httpParameters = new BasicHttpParams();
-		
-		// Set the timeout in milliseconds until a connection is established.
-		HttpConnectionParams.setConnectionTimeout(httpParameters, 3000);
-		
-		// Set the default socket timeout (SO_TIMEOUT) 
-		// in milliseconds which is the timeout for waiting for data.
-		HttpConnectionParams.setSoTimeout(httpParameters, 5000);
-		
-		final DefaultHttpClient client = new DefaultHttpClient(httpParameters);
 		HttpPost request = new HttpPost(Cashpoint.ENDPOINT+"/groups?auth_token="
 				+session.getAuthtoken());
 		request.setHeader("Content-Type", "application/json");
@@ -109,7 +99,7 @@ public class CreateGroupTask extends AsyncTask<String,Void,Group> {
 			JSONObject json = new JSONObject();
 			json.put("name", params[0]);
 			request.setEntity(new ByteArrayEntity(json.toString().getBytes("UTF8")));
-			HttpResponse response = client.execute(request);
+			HttpResponse response = Cashpoint.getHttpClient().execute(request);
 			int statusCode = response.getStatusLine().getStatusCode();
 			
 			if (statusCode != 201)
@@ -127,8 +117,6 @@ public class CreateGroupTask extends AsyncTask<String,Void,Group> {
 		} catch (JSONException e) {
 			Log.e(this.getClass().getSimpleName(), e.toString());
 			error = e;
-		} finally {
-			client.getConnectionManager().shutdown();
 		}
 		
 		return null;

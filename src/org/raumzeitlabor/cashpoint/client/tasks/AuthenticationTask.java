@@ -12,9 +12,9 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.raumzeitlabor.cashpoint.ManagerActivity;
 import org.raumzeitlabor.cashpoint.R;
-import org.raumzeitlabor.cashpoint.UserActivity;
+import org.raumzeitlabor.cashpoint.activities.ManagerActivity;
+import org.raumzeitlabor.cashpoint.activities.UserActivity;
 import org.raumzeitlabor.cashpoint.client.AsyncTaskCompleteListener;
 import org.raumzeitlabor.cashpoint.client.Cashpoint;
 import org.raumzeitlabor.cashpoint.client.HttpStatusException;
@@ -55,20 +55,9 @@ public class AuthenticationTask extends AsyncTask<Object,Void,Session> {
 	
 	@Override
 	protected Session doInBackground(Object... params) {
-		if (params.length != 2) {
-			return null;
-		}
+		if (params.length != 2)
+			throw new IllegalArgumentException();
 		
-		HttpParams httpParameters = new BasicHttpParams();
-		
-		// Set the timeout in milliseconds until a connection is established.
-		HttpConnectionParams.setConnectionTimeout(httpParameters, 3000);
-		
-		// Set the default socket timeout (SO_TIMEOUT) 
-		// in milliseconds which is the timeout for waiting for data.
-		HttpConnectionParams.setSoTimeout(httpParameters, 5000);
-		
-		final DefaultHttpClient client = new DefaultHttpClient(httpParameters);
 		HttpPost request = new HttpPost(Cashpoint.ENDPOINT+"/auth");
 		request.addHeader("Content-Type", "application/json");
 
@@ -79,7 +68,7 @@ public class AuthenticationTask extends AsyncTask<Object,Void,Session> {
 			json.put("passwd", params[1]);
 			
 			request.setEntity(new ByteArrayEntity(json.toString().getBytes("utf-8")));
-			HttpResponse response = client.execute(request);
+			HttpResponse response = Cashpoint.getHttpClient().execute(request);
 			int statusCode = response.getStatusLine().getStatusCode();
 			
 			if (statusCode != 200)
@@ -100,8 +89,6 @@ public class AuthenticationTask extends AsyncTask<Object,Void,Session> {
 		} catch (HttpStatusException e) {
 			Log.e(this.getClass().getSimpleName(), e.toString());
 			error = e;
-		} finally {
-			client.getConnectionManager().shutdown();
 		}
 		
 		return s;

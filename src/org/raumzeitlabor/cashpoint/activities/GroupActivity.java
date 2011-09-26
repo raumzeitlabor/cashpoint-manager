@@ -1,7 +1,12 @@
-package org.raumzeitlabor.cashpoint;
+package org.raumzeitlabor.cashpoint.activities;
 
 import java.util.ArrayList;
 
+import org.raumzeitlabor.cashpoint.R;
+import org.raumzeitlabor.cashpoint.R.drawable;
+import org.raumzeitlabor.cashpoint.R.id;
+import org.raumzeitlabor.cashpoint.R.layout;
+import org.raumzeitlabor.cashpoint.R.string;
 import org.raumzeitlabor.cashpoint.client.AsyncTaskCompleteListener;
 import org.raumzeitlabor.cashpoint.client.GroupArrayAdapter;
 import org.raumzeitlabor.cashpoint.client.HttpStatusException;
