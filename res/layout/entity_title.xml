@@ -1,4 +1,4 @@
-
+<LinearLayout android:id="@+id/LinearLayout1" android:layout_width="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android" android:orientation="vertical" android:layout_height="wrap_content">
     <LinearLayout android:background="@drawable/gradient" android:id="@+id/linearLayout1" android:layout_width="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android" android:layout_height="45dp">
         <ImageView android:layout_height="wrap_content" android:src="@drawable/rzl_logo_small" android:id="@+id/imageView1" android:layout_width="50dp" android:paddingTop="2dp" android:paddingBottom="2dp" android:layout_marginLeft="3dp"></ImageView>
         <LinearLayout android:layout_height="match_parent" android:orientation="vertical" android:layout_gravity="fill_horizontal" android:layout_width="wrap_content" android:layout_weight="1" android:id="@+id/filler">
@@ -10,3 +10,5 @@
         <View android:layout_height="fill_parent" android:layout_width="1px" android:background="#90AAAAAA"/>
         <ImageButton android:background="@null" android:layout_height="match_parent" android:layout_width="50dp" android:id="@+id/searchBtn" android:src="@drawable/magnifier"></ImageButton>
     </LinearLayout>
+    <View android:layout_height="1px" android:cacheColorHint="#ffffffff" android:layout_width="fill_parent" android:background="#44AAAAAA" android:fadingEdge="horizontal" android:fadingEdgeLength="25dp"></View>
+</LinearLayout>
